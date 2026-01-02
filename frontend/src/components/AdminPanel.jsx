@@ -1,0 +1,8 @@
+export default function AdminPanel() {
+  return (
+    <div>
+      <h2>Admin Panel</h2>
+      <p>Here you can manage voters or view all votes (future enhancement)</p>
+    </div>
+  );
+}

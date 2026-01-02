@@ -1,0 +1,58 @@
+version: "3.8"
+
+services:
+
+  mongo:
+    image: mongo:6
+    container_name: mongo
+    ports:
+      - "27017:27017"
+
+  auth-service:
+    build: ./auth-service
+    container_name: auth-service
+    ports:
+      - "4000:4000"
+    depends_on:
+      - mongo
+
+  voting-primary:
+    build: ./voting-service-primary
+    container_name: voting-primary
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mongo
+
+  voting-backup:
+    build: ./voting-service-backup
+    container_name: voting-backup
+    ports:
+      - "5001:5000"
+    depends_on:
+      - mongo
+
+  watchdog-service:
+    build: ./watchdog-service
+    container_name: watchdog-service
+    ports:
+      - "6000:6000"
+    depends_on:
+      - voting-primary
+      - voting-backup
+
+  result-service:
+    build: ./result-service
+    container_name: result-service
+    ports:
+      - "7000:7000"
+    depends_on:
+      - mongo
+
+  frontend:
+    build: ./frontend
+    container_name: frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - watchdog-service
