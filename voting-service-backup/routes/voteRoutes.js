@@ -1,29 +1,29 @@
 const express = require("express");
 const Vote = require("../models/Vote");
-const auth = require("../middleware/authMiddleware");
+const jwt = require("jsonwebtoken");
 
 const router = express.Router();
 
-router.post("/vote", auth, async (req, res) => {
+router.post("/", async (req, res) => {
   try {
-    if (req.user.role !== "VOTER") {
-      return res.status(403).send("Only voters can vote");
+    const token = req.headers.authorization.split(" ")[1];
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    const alreadyVoted = await Vote.findOne({ userId: decoded.id });
+    if (alreadyVoted) {
+      return res.status(403).send("User has already voted");
     }
 
     const vote = new Vote({
-      voterId: req.user.id,
+      userId: decoded.id,
       candidate: req.body.candidate
     });
 
     await vote.save();
-    res.send("Vote cast successfully");
+    res.send("Vote recorded");
 
-  } catch (err) {
-    if (err.code === 11000) {
-      res.status(409).send("You have already voted");
-    } else {
-      res.status(500).send("Voting service error");
-    }
+  } catch {
+    res.status(401).send("Invalid token");
   }
 });
 

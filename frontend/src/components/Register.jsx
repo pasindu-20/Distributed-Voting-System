@@ -1,0 +1,75 @@
+import { useState } from "react";
+import axios from "axios";
+
+export default function Register({ goToLogin }) {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [role, setRole] = useState("VOTER");
+  const [adminSecret, setAdminSecret] = useState("");
+  const [error, setError] = useState("");
+
+  const handleRegister = async (e) => {
+    e.preventDefault();
+
+    // 🔎 Frontend validation
+    if (username.length < 4) {
+      return setError("Username must be at least 4 characters");
+    }
+
+    if (password.length < 6) {
+      return setError("Password must be at least 6 characters");
+    }
+
+    try {
+      await axios.post("http://localhost:4000/auth/register", {
+        username,
+        password,
+        role,
+        adminSecret: role === "ADMIN" ? adminSecret : undefined
+      });
+
+      alert("Registration successful. Please login.");
+      goToLogin();
+    } catch (err) {
+      setError(err.response?.data || "Registration failed");
+    }
+  };
+
+  return (
+    <form className="card" onSubmit={handleRegister}>
+      <h2>Register</h2>
+
+      {error && <p className="error">{error}</p>}
+
+      <input
+        placeholder="Username"
+        value={username}
+        onChange={e => setUsername(e.target.value)}
+      />
+
+      <input
+        type="password"
+        placeholder="Password"
+        value={password}
+        onChange={e => setPassword(e.target.value)}
+      />
+
+      <select value={role} onChange={e => setRole(e.target.value)}>
+        <option value="VOTER">Voter</option>
+        <option value="ADMIN">Admin</option>
+      </select>
+
+      {role === "ADMIN" && (
+        <input
+          placeholder="Admin Secret"
+          value={adminSecret}
+          onChange={e => setAdminSecret(e.target.value)}
+        />
+      )}
+
+      <button type="submit">Register</button>
+
+      <p onClick={goToLogin} className="link">Already have an account? Login</p>
+    </form>
+  );
+}
