@@ -1,30 +1,30 @@
 const express = require("express");
-const Vote = require("../models/Vote");
 const jwt = require("jsonwebtoken");
 
 const router = express.Router();
+const JWT_SECRET = "myjwtsecret";
 
-router.post("/", async (req, res) => {
+function verifyToken(req, res, next) {
+  const token = req.headers.authorization?.split(" ")[1];
+  if (!token) return res.status(401).send("No token");
+
   try {
-    const token = req.headers.authorization.split(" ")[1];
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-    const alreadyVoted = await Vote.findOne({ userId: decoded.id });
-    if (alreadyVoted) {
-      return res.status(403).send("User has already voted");
-    }
-
-    const vote = new Vote({
-      userId: decoded.id,
-      candidate: req.body.candidate
-    });
-
-    await vote.save();
-    res.send("Vote recorded");
-
+    jwt.verify(token, JWT_SECRET);
+    next();
   } catch {
-    res.status(401).send("Invalid token");
+    res.status(403).send("Invalid token");
   }
+}
+
+router.post("/vote", verifyToken, (req, res) => {
+  const { candidate } = req.body;
+
+  if (!candidate) {
+    return res.status(400).send("Candidate required");
+  }
+
+  console.log("Vote received for:", candidate);
+  res.send("Vote recorded successfully");
 });
 
 module.exports = router;

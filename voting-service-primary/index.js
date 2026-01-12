@@ -1,20 +1,49 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const jwt = require("jsonwebtoken");
 const voteRoutes = require("./routes/voteRoutes");
+const adminRoutes = require("./routes/adminRoutes");
+const adminOnly = require("./middleware/adminOnly");
+
+app.use("/admin", auth, adminOnly, adminRoutes);
+
 
 const app = express();
 app.use(express.json());
 
-app.use("/votes", voteRoutes);
+mongoose.connect("mongodb://mongo:27017/voting");
 
-// Health check endpoint (for Watchdog)
+const JWT_SECRET = "jwt_secret_key";
+
+// 🔐 JWT middleware
+function auth(req, res, next) {
+  const token = req.headers.authorization?.split(" ")[1];
+  if (!token) return res.status(401).send("No token");
+
+  try {
+    req.user = jwt.verify(token, JWT_SECRET);
+    next();
+  } catch {
+    res.status(401).send("Invalid token");
+  }
+}
+
+// Protected voting routes
+app.use("/votes", auth, voteRoutes);
+
+// Health check for watchdog
 app.get("/health", (req, res) => {
   res.send("OK");
 });
-
-mongoose.connect("mongodb://mongo:27017/voting");
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Voting Service running on port ${PORT}`);
 });
+
+const adminRoutes = require("./routes/adminRoutes");
+
+app.use("/admin", adminRoutes);
+const adminRoutes = require("./routes/adminRoutes");
+
+app.use("/admin", adminRoutes);

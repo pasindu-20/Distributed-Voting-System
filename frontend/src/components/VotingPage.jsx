@@ -1,6 +1,8 @@
 import axios from "axios";
 
-export default function VotingPage() {
+const API = "http://localhost:7000"; // ✅ Watchdog ONLY
+
+export default function VotingPage({ setPage }) {
 
   const vote = async (candidate) => {
     const confirmVote = window.confirm(
@@ -11,19 +13,26 @@ export default function VotingPage() {
 
     try {
       await axios.post(
-        "http://localhost:5000/vote",
-        { candidate },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`
-          }
-        }
-      );
+  "http://localhost:7000/votes/vote",
+  { choice },
+  {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  }
+);
+
 
       alert("Vote submitted successfully");
-    } catch {
-      alert("Voting failed");
+    } catch (err) {
+      console.error(err);
+      alert(err.response?.data || "Voting failed");
     }
+  };
+
+  const logout = () => {
+    localStorage.clear();
+    setPage("login");
   };
 
   return (
@@ -37,6 +46,10 @@ export default function VotingPage() {
       <button onClick={() => vote("Candidate B")}>
         Vote Candidate B
       </button>
+
+      <br /><br />
+
+      <button onClick={logout}>Logout</button>
     </div>
   );
 }

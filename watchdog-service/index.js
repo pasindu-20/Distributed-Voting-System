@@ -1,15 +1,17 @@
 const express = require("express");
 const axios = require("axios");
+const cors = require("cors");
 
 const app = express();
+app.use(cors());
 app.use(express.json());
 
-const PRIMARY = "http://voting-primary:5000";
-const BACKUP = "http://voting-backup:5000";
+const PRIMARY = "http://voting-service-primary:5000";
+const BACKUP  = "http://voting-service-backup:5000";
 
 let activeServer = PRIMARY;
 
-// Health check every 5 seconds
+// 🔁 Health check every 5 seconds
 setInterval(async () => {
   try {
     await axios.get(`${PRIMARY}/health`, { timeout: 2000 });
@@ -21,7 +23,29 @@ setInterval(async () => {
   }
 }, 5000);
 
-// Proxy vote requests
+// ======================
+// ADMIN ROUTES (PROXY)
+// ======================
+
+app.use("/admin", async (req, res) => {
+  try {
+    const response = await axios({
+      method: req.method,
+      url: `${activeServer}${req.originalUrl}`,
+      data: req.body,
+      headers: req.headers,
+    });
+    res.status(response.status).send(response.data);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Admin service unavailable");
+  }
+});
+
+// ======================
+// VOTING ROUTES (PROXY)
+// ======================
+
 app.post("/votes/vote", async (req, res) => {
   try {
     const response = await axios.post(
@@ -30,11 +54,16 @@ app.post("/votes/vote", async (req, res) => {
       { headers: req.headers }
     );
     res.send(response.data);
-  } catch (err) {
+  } catch {
     res.status(500).send("All voting servers are unavailable");
   }
 });
 
-app.listen(6000, () => {
-  console.log("Watchdog running on port 6000");
+// ======================
+// WATCHDOG PORT 7000
+// ======================
+
+const PORT = 7000;
+app.listen(PORT, () => {
+  console.log(`Watchdog running on port ${PORT}`);
 });

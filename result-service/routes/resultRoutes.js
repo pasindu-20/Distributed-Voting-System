@@ -3,17 +3,12 @@ const Vote = require("../models/Vote");
 
 const router = express.Router();
 
-// Get final results
-router.get("/results", async (req, res) => {
-  try {
-    const results = await Vote.aggregate([
-      { $group: { _id: "$candidate", votes: { $sum: 1 } } }
-    ]);
+router.get("/", async (req, res) => {
+  const results = await Vote.aggregate([
+    { $group: { _id: "$candidate", count: { $sum: 1 } } }
+  ]);
 
-    res.json(results);
-  } catch {
-    res.status(500).send("Unable to fetch results");
-  }
+  res.json(results);
 });
 
 module.exports = router;

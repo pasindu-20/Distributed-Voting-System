@@ -1,71 +1,48 @@
-version: "3.9"
-
 services:
-
   mongo:
     image: mongo:6
-    container_name: mongo
     ports:
       - "27017:27017"
 
   auth-service:
     build: ./auth-service
-    container_name: auth-service
     ports:
       - "4000:4000"
     depends_on:
       - mongo
 
-  # =========================
-  # VOTING SERVICE (PRIMARY)
-  # =========================
   voting-service-primary:
     build: ./voting-service-primary
-    container_name: voting-service-primary
     ports:
       - "5000:5000"
-    environment:
-      ROLE: PRIMARY
     depends_on:
       - mongo
-      - auth-service
 
-  # =========================
-  # VOTING SERVICE (BACKUP)
-  # =========================
   voting-service-backup:
     build: ./voting-service-backup
-    container_name: voting-service-backup
     ports:
       - "5001:5000"
-    environment:
-      ROLE: BACKUP
-    depends_on:
-      - mongo
-      - auth-service
-
-  result-service:
-    build: ./result-service
-    container_name: result-service
-    ports:
-      - "6000:6000"
     depends_on:
       - mongo
 
   watchdog-service:
     build: ./watchdog-service
-    container_name: watchdog-service
     ports:
       - "7000:7000"
     depends_on:
       - voting-service-primary
       - voting-service-backup
 
+  result-service:
+    build: ./result-service
+    ports:
+      - "6000:6000"
+    depends_on:
+      - mongo
+
   frontend:
     build: ./frontend
-    container_name: frontend
     ports:
       - "3000:3000"
     depends_on:
       - auth-service
-      - voting-service-primary

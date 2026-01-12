@@ -1,17 +1,19 @@
 import { useState } from "react";
 import axios from "axios";
 
-export default function Register({ goToLogin }) {
+const API = "http://localhost:4000";
+
+export default function Register({ setPage }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("VOTER");
+  const [role, setRole] = useState("USER");
   const [adminSecret, setAdminSecret] = useState("");
   const [error, setError] = useState("");
 
   const handleRegister = async (e) => {
     e.preventDefault();
+    setError("");
 
-    // 🔎 Frontend validation
     if (username.length < 4) {
       return setError("Username must be at least 4 characters");
     }
@@ -21,15 +23,15 @@ export default function Register({ goToLogin }) {
     }
 
     try {
-      await axios.post("http://localhost:4000/auth/register", {
+      await axios.post(`${API}/auth/register`, {
         username,
         password,
         role,
-        adminSecret: role === "ADMIN" ? adminSecret : undefined
+        adminSecret: role === "ADMIN" ? adminSecret : undefined,
       });
 
       alert("Registration successful. Please login.");
-      goToLogin();
+      setPage("login");
     } catch (err) {
       setError(err.response?.data || "Registration failed");
     }
@@ -44,18 +46,20 @@ export default function Register({ goToLogin }) {
       <input
         placeholder="Username"
         value={username}
-        onChange={e => setUsername(e.target.value)}
+        onChange={(e) => setUsername(e.target.value)}
+        required
       />
 
       <input
         type="password"
         placeholder="Password"
         value={password}
-        onChange={e => setPassword(e.target.value)}
+        onChange={(e) => setPassword(e.target.value)}
+        required
       />
 
-      <select value={role} onChange={e => setRole(e.target.value)}>
-        <option value="VOTER">Voter</option>
+      <select value={role} onChange={(e) => setRole(e.target.value)}>
+        <option value="USER">User</option>
         <option value="ADMIN">Admin</option>
       </select>
 
@@ -63,13 +67,15 @@ export default function Register({ goToLogin }) {
         <input
           placeholder="Admin Secret"
           value={adminSecret}
-          onChange={e => setAdminSecret(e.target.value)}
+          onChange={(e) => setAdminSecret(e.target.value)}
         />
       )}
 
       <button type="submit">Register</button>
 
-      <p onClick={goToLogin} className="link">Already have an account? Login</p>
+      <p onClick={() => setPage("login")} className="link">
+        Already have an account? Login
+      </p>
     </form>
   );
 }

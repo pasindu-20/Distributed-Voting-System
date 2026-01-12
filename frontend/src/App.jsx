@@ -1,24 +1,23 @@
 import { useState } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./components/Login";
-import Vote from "./components/Vote";
-import Result from "./components/Result";
+import Register from "./components/Register";
+import VotingPage from "./components/VotingPage";
 import AdminPanel from "./components/AdminPanel";
 
-function App() {
-  const [token, setToken] = useState(null);
-  const [role, setRole] = useState(null);
 
-  if (!token) return <Login setToken={setToken} setRole={setRole} />;
+function App() {
+  const [page, setPage] = useState("login");
 
   return (
-    <Router>
-      <Routes>
-        {role === "ADMIN" && <Route path="/" element={<AdminPanel />} />}
-        {role === "VOTER" && <Route path="/" element={<Vote token={token} />} />}
-        <Route path="/results" element={<Result />} />
-      </Routes>
-    </Router>
+    <div>
+      {page === "login" && <Login setPage={setPage} />}
+
+      {page === "register" && <Register setPage={setPage} />}
+
+      {page === "vote" && <VotingPage setPage={setPage} />}
+
+      {page === "admin" && <AdminPanel />}
+    </div>
   );
 }
 
