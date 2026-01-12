@@ -5,15 +5,12 @@ const voteRoutes = require("./routes/voteRoutes");
 const adminRoutes = require("./routes/adminRoutes");
 const adminOnly = require("./middleware/adminOnly");
 
-app.use("/admin", auth, adminOnly, adminRoutes);
-
-
 const app = express();
 app.use(express.json());
 
 mongoose.connect("mongodb://mongo:27017/voting");
 
-const JWT_SECRET = "jwt_secret_key";
+const JWT_SECRET = "myjwtsecret";
 
 // 🔐 JWT middleware
 function auth(req, res, next) {
@@ -28,7 +25,11 @@ function auth(req, res, next) {
   }
 }
 
+// Protected voting routes
 app.use("/votes", auth, voteRoutes);
+
+// Admin routes
+app.use("/admin", auth, adminOnly, adminRoutes);
 
 app.get("/health", (req, res) => {
   res.send("OK");
@@ -38,10 +39,3 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Voting Backup running on port ${PORT}`);
 });
-
-const adminRoutes = require("./routes/adminRoutes");
-
-app.use("/admin", adminRoutes);
-const adminRoutes = require("./routes/adminRoutes");
-
-app.use("/admin", adminRoutes);

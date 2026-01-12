@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const VoteSchema = new mongoose.Schema({
-  userId: { type: String, unique: true },
+  voterId: { type: String, unique: true },
   candidate: String
 });
 

@@ -13,15 +13,14 @@ export default function VotingPage({ setPage }) {
 
     try {
       await axios.post(
-  "http://localhost:7000/votes/vote",
-  { choice },
-  {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
-    },
-  }
-);
-
+        `${API}/votes/vote`,
+        { candidate },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
 
       alert("Vote submitted successfully");
     } catch (err) {

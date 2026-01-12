@@ -7,6 +7,6 @@ app.use("/api", resultRoutes);
 
 mongoose.connect("mongodb://mongo:27017/voting");
 
-app.listen(7000, () => {
-  console.log("Result Service running on port 7000");
+app.listen(6000, () => {
+  console.log("Result Service running on port 6000");
 });
