@@ -55,6 +55,22 @@ app.use("/admin", async (req, res) => {
 // VOTING ROUTES (PROXY)
 // ======================
 
+app.get("/votes/elections", async (req, res) => {
+  try {
+    const response = await axios.get(
+      `${activeServer}/votes/elections`,
+      { headers: req.headers }
+    );
+    res.json(response.data);
+  } catch (err) {
+    console.error("Elections proxy error:", err.message);
+    if (err.response) {
+      return res.status(err.response.status).send(err.response.data);
+    }
+    res.status(500).send("All voting servers are unavailable");
+  }
+});
+
 app.post("/votes/vote", async (req, res) => {
   try {
     const response = await axios.post(

@@ -19,6 +19,17 @@ function verifyToken(req, res, next) {
   }
 }
 
+// GET active elections for users
+router.get("/elections", verifyToken, async (req, res) => {
+  try {
+    const elections = await Election.find({ isActive: true });
+    res.json(elections);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Failed to fetch elections");
+  }
+});
+
 router.post("/vote", verifyToken, async (req, res) => {
   try {
     const { candidate } = req.body;
