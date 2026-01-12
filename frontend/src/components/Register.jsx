@@ -1,14 +1,4 @@
-import { useState } from "react";
-import axios from "axios";
-
-const API = "http://localhost:4000";
-
-export default function Register({ setPage }) {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [role, setRole] = useState("USER");
-  const [adminSecret, setAdminSecret] = useState("");
-  const [error, setError] = useState("");
+export { default } from './Register';
 
   const handleRegister = async (e) => {
     e.preventDefault();

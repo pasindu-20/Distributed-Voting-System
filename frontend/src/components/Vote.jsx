@@ -1,8 +1,4 @@
-import { useState } from "react";
-import { vote } from "../services/api";
-
-export default function Vote({ token }) {
-  const [candidate, setCandidate] = useState("");
+export { default } from './Vote';
 
   const handleVote = async () => {
     try {

@@ -1,11 +1,4 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
-
-const API = "http://localhost:7000"; // ✅ Watchdog ONLY
-
-export default function VotingPage({ setPage }) {
-  const [elections, setElections] = useState([]);
-  const [error, setError] = useState("");
+export { default } from './VotingPage';
 
   // Load active elections
   useEffect(() => {

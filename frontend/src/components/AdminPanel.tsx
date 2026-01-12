@@ -1,6 +1,20 @@
-export { default } from './AdminPanel';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 
-  const token = localStorage.getItem("token");
+type Candidate = { name: string; votes?: number };
+type Election = { _id: string; title: string; isActive?: boolean; candidates: Candidate[] };
+
+type AdminPanelProps = { setPage: (p: string) => void };
+
+const API = "http://localhost:7000"; // Watchdog
+
+export default function AdminPanel({ setPage }: AdminPanelProps) {
+  const [title, setTitle] = useState("");
+  const [candidatesInput, setCandidatesInput] = useState("");
+  const [elections, setElections] = useState<Election[]>([]);
+  const [error, setError] = useState("");
+
+  const token = localStorage.getItem("token") || "";
 
   // Load all elections
   const loadElections = async () => {
@@ -34,8 +48,8 @@ export { default } from './AdminPanel';
       // Add candidates
       const candidates = candidatesInput
         .split(",")
-        .map(c => c.trim())
-        .filter(c => c);
+        .map((c: string) => c.trim())
+        .filter((c: string) => c);
 
       for (let name of candidates) {
         await axios.post(
@@ -54,7 +68,7 @@ export { default } from './AdminPanel';
   };
 
   // Add candidate later
-  const addCandidate = async (id) => {
+  const addCandidate = async (id: string) => {
     const name = prompt("Candidate name:");
     if (!name) return;
 
@@ -71,7 +85,7 @@ export { default } from './AdminPanel';
   };
 
   // Toggle election active/close
-  const toggleElection = async (id) => {
+  const toggleElection = async (id: string) => {
     try {
       await axios.put(
         `${API}/admin/election/${id}/toggle`,
@@ -95,56 +109,40 @@ export { default } from './AdminPanel';
 
   return (
     <div className="card">
-      <h2>Admin Panel</h2>
+      <h2 className="text-xl font-semibold">Admin Panel</h2>
 
       {error && <p className="error">{error}</p>}
 
-      <input
-        placeholder="Election Title"
-        value={title}
-        onChange={e => setTitle(e.target.value)}
-      />
+      <input className="input" placeholder="Election Title" value={title} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setTitle(e.target.value)} />
 
-      <input
-        placeholder="Candidates (comma separated)"
-        value={candidatesInput}
-        onChange={e => setCandidatesInput(e.target.value)}
-      />
+      <input className="input" placeholder="Candidates (comma separated)" value={candidatesInput} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCandidatesInput(e.target.value)} />
 
-      <button onClick={createElection}>Create Election</button>
+      <button className="btn mt-2" onClick={createElection}>Create Election</button>
 
-      <hr />
+      <hr className="my-4" />
 
       {elections.length === 0 && <p>No elections yet</p>}
 
       {elections.map(e => (
-        <div key={e._id} style={{ marginBottom: "20px" }}>
-          <h4>
-            {e.title} —{" "}
-            <span style={{ color: e.isActive ? "green" : "red" }}>
-              {e.isActive ? "Active" : "Closed"}
-            </span>
+        <div key={e._id} className="mb-5">
+          <h4 className="font-medium">
+            {e.title} — <span className={`${e.isActive ? 'text-green-600' : 'text-red-600'}`}>{e.isActive ? 'Active' : 'Closed'}</span>
           </h4>
 
-          <button onClick={() => addCandidate(e._id)}>
-            Add Candidate
-          </button>
+          <div className="flex gap-2 my-2">
+            <button className="btn" onClick={() => addCandidate(e._id)}>Add Candidate</button>
+            <button className="btn" onClick={() => toggleElection(e._id)}>Toggle Status</button>
+          </div>
 
-          <button onClick={() => toggleElection(e._id)}>
-            Toggle Status
-          </button>
-
-          <ul>
+          <ul className="list-disc pl-5">
             {e.candidates.map((c, i) => (
-              <li key={i}>
-                {c.name} — {c.votes} votes
-              </li>
+              <li key={i}>{c.name} — {c.votes} votes</li>
             ))}
           </ul>
         </div>
       ))}
 
-      <button onClick={logout}>Logout</button>
+      <button className="btn mt-4" onClick={logout}>Logout</button>
     </div>
   );
 }

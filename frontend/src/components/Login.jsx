@@ -1,16 +1,4 @@
-import { useState } from "react";
-import axios from "axios";
-
-const API = "http://localhost:4000";
-
-export default function Login({ setPage }) {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    setError("");
+export { default } from './Login';
 
     try {
       const res = await axios.post(`${API}/auth/login`, {

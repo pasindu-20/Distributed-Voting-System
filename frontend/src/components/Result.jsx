@@ -1,8 +1,4 @@
-import { useEffect, useState } from "react";
-import { getResults } from "../services/api";
-
-export default function Result() {
-  const [results, setResults] = useState([]);
+export { default } from './Result';
 
   useEffect(() => {
     const fetchResults = async () => {
