@@ -39,27 +39,33 @@ export default function Register({ setPage }: RegisterProps) {
   };
 
   return (
-    <form className="card max-w-md mx-auto" onSubmit={handleRegister}>
-      <h2 className="text-2xl font-semibold mb-4">Register</h2>
+    <div className="flex flex-col items-center justify-center min-h-[80vh]">
+      <div className="mb-8 text-center">
+        <h1 className="text-4xl sm:text-5xl font-bold mb-2">CIVIX</h1>
+        <p className="text-lg sm:text-xl text-gray-300">Voting System</p>
+      </div>
+      <form className="card max-w-md w-full mx-auto" onSubmit={handleRegister}>
+        <h2 className="text-3xl font-semibold mb-6 text-center">Register</h2>
 
-      {error && <p className="error mb-2">{error}</p>}
+        {error && <p className="error mb-4">{error}</p>}
 
-      <input className="input" placeholder="Username" value={username} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUsername(e.target.value)} required />
+        <input className="input" placeholder="Username" value={username} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUsername(e.target.value)} required />
 
-      <input className="input" type="password" placeholder="Password" value={password} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)} required />
+        <input className="input" type="password" placeholder="Password" value={password} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)} required />
 
-      <select className="input" value={role} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setRole(e.target.value as "USER" | "ADMIN") }>
-        <option value="USER">User</option>
-        <option value="ADMIN">Admin</option>
-      </select>
+        <select className="input" value={role} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setRole(e.target.value as "USER" | "ADMIN") }>
+          <option value="USER">User</option>
+          <option value="ADMIN">Admin</option>
+        </select>
 
-      {role === "ADMIN" && (
-        <input className="input" placeholder="Admin Secret" value={adminSecret} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setAdminSecret(e.target.value)} />
-      )}
+        {role === "ADMIN" && (
+          <input className="input" placeholder="Admin Secret" value={adminSecret} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setAdminSecret(e.target.value)} />
+        )}
 
-      <button className="btn mt-2" type="submit">Register</button>
+        <button className="btn mt-4 w-full" type="submit">Register</button>
 
-      <p onClick={() => setPage("login")} className="link mt-4 cursor-pointer text-sm text-center">Already have an account? Login</p>
-    </form>
+        <p onClick={() => setPage("login")} className="link mt-6 cursor-pointer text-sm text-center">Already have an account? Login</p>
+      </form>
+    </div>
   );
 }

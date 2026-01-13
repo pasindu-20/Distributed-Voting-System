@@ -2,13 +2,166 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Minimal utility-based styles */
-html, body, #root { height: 100%; }
-body { @apply bg-gray-50 text-gray-900 font-sans; }
+/* Glassmorphism Base Styles */
+html, body, #root { 
+  height: 100%; 
+  margin: 0;
+  padding: 0;
+}
 
-.container { @apply max-w-3xl mx-auto p-6; }
-.card { @apply bg-white shadow rounded p-6; }
-.input, input, select, button { @apply w-full p-3 my-2 rounded border border-gray-200; }
-.btn { @apply inline-block px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700; }
-.error { @apply text-red-600 text-sm; }
-.link { @apply text-blue-600 cursor-pointer text-center; }
+body { 
+  @apply font-sans antialiased;
+  background: linear-gradient(135deg, #0f0c29 0%, #302b63 25%, #24243e 50%, #0f0c29 100%);
+  background-size: 400% 400%;
+  animation: gradientShift 15s ease infinite;
+  color: #e0e7ff;
+  overflow-x: hidden;
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Glassmorphism Container */
+.container { 
+  @apply min-h-screen w-full p-4 sm:p-6 md:p-8;
+  position: relative;
+}
+
+/* Glass Card Effect */
+.card { 
+  @apply rounded-2xl p-6 sm:p-8 backdrop-blur-xl;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(139, 92, 246, 0.3);
+  box-shadow: 0 8px 32px 0 rgba(139, 92, 246, 0.2), 0 0 20px rgba(59, 130, 246, 0.1);
+  transform: translateY(-2px);
+}
+
+/* Input Styles */
+.input, input, select { 
+  @apply w-full p-3 sm:p-4 my-2 rounded-xl;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #e0e7ff;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.input::placeholder, input::placeholder {
+  color: rgba(224, 231, 255, 0.5);
+}
+
+.input:focus, input:focus, select:focus {
+  outline: none;
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(59, 130, 246, 0.5);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1), 0 0 20px rgba(59, 130, 246, 0.2);
+}
+
+select {
+  cursor: pointer;
+}
+
+select option {
+  background: #1e1b4b;
+  color: #e0e7ff;
+}
+
+/* Button Styles */
+.btn { 
+  @apply inline-block px-6 py-3 rounded-xl font-medium;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.8) 0%, rgba(139, 92, 246, 0.8) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.btn:hover::before {
+  left: 100%;
+}
+
+.btn:hover {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 1) 0%, rgba(139, 92, 246, 1) 100%);
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4), 0 0 30px rgba(139, 92, 246, 0.3);
+  transform: translateY(-2px);
+}
+
+.btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 10px rgba(59, 130, 246, 0.3);
+}
+
+/* Error Styles */
+.error { 
+  @apply text-sm font-medium;
+  color: #f87171;
+  background: rgba(248, 113, 113, 0.1);
+  border: 1px solid rgba(248, 113, 113, 0.3);
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  backdrop-filter: blur(10px);
+}
+
+/* Link Styles */
+.link { 
+  @apply cursor-pointer text-center transition-all duration-300;
+  color: rgba(139, 92, 246, 0.8);
+  text-decoration: none;
+}
+
+.link:hover {
+  color: rgba(139, 92, 246, 1);
+  text-shadow: 0 0 10px rgba(139, 92, 246, 0.5);
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  @apply font-semibold;
+  background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 50%, #34d399 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(139, 92, 246, 0.5);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(139, 92, 246, 0.7);
+}

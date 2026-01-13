@@ -59,31 +59,43 @@ export default function VotingPage({ setPage }: Props) {
   };
 
   return (
-    <div className="card">
-      <h2 className="text-xl font-semibold">Cast Your Vote</h2>
+    <div className="card max-w-4xl mx-auto">
+      <div className="flex justify-between items-center mb-8">
+        <div>
+          <h1 className="text-3xl font-bold mb-1">CIVIX</h1>
+          <p className="text-gray-300">Voting System</p>
+        </div>
+        <button className="btn" onClick={logout}>Logout</button>
+      </div>
 
-      {error && <p className="error">{error}</p>}
+      <h2 className="text-3xl font-semibold mb-6">Cast Your Vote</h2>
+
+      {error && <p className="error mb-6">{error}</p>}
 
       {elections.length === 0 ? (
-        <p>No active elections at the moment.</p>
+        <div className="text-center py-12">
+          <p className="text-xl text-gray-400">No active elections at the moment.</p>
+        </div>
       ) : (
-        elections.map((election) => (
-          <div key={election._id} className="mb-5 border rounded p-3 border-gray-200">
-            <h3 className="font-medium mb-2">{election.title}</h3>
-            <div className="flex flex-wrap gap-3">
-              {election.candidates.map((candidate) => (
-                <button key={candidate.name} className="btn" onClick={() => vote(election._id, candidate.name)}>
-                  Vote for {candidate.name}
-                </button>
-              ))}
+        <div className="space-y-6">
+          {elections.map((election) => (
+            <div key={election._id} className="rounded-2xl p-6 backdrop-blur-xl bg-white/5 border border-white/10 hover:border-purple-500/30 transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/10">
+              <h3 className="text-xl font-semibold mb-4 text-cyan-300">{election.title}</h3>
+              <div className="flex flex-wrap gap-3">
+                {election.candidates.map((candidate) => (
+                  <button 
+                    key={candidate.name} 
+                    className="btn" 
+                    onClick={() => vote(election._id, candidate.name)}
+                  >
+                    Vote for {candidate.name}
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
-        ))
+          ))}
+        </div>
       )}
-
-      <div className="mt-4">
-        <button className="btn mr-2" onClick={logout}>Logout</button>
-      </div>
     </div>
   );
 }
