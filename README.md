@@ -172,7 +172,7 @@ http://YOUR_IP:3000
 ## 👨‍💻 Authors
 
 Developed as a **Distributed Systems Mini Project**
-University of Kelaniya – Faculty of Computing & Technology
+University of Kelaniya 
 
 ---
 
