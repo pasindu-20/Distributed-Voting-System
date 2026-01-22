@@ -89,7 +89,7 @@ The system consists of the following services:
 ### 🔹 Step 1: Clone the Repository
 
 ```bash
-git clone <your-github-repo-url>
+git clone <https://github.com/pasindu-20/Distributed-Voting-System.git>
 cd Distributed-Voting-System
 ```
 
